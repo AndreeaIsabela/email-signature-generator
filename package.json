@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "workspaces": [
+    "app/*"
+  ],
+  "scripts": {
+    "build:client": "vite build",
+    "build::server": "tsc"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.10",
+    "typescript": "^5.7.3"
+  }
+}

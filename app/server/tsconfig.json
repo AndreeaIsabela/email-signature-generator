@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "resolveJsonModule": true,  // Enable importing JSON files
+    "esModuleInterop": true    // Optional, but useful for clean imports
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
