@@ -1,5 +1,7 @@
 
 export interface SignatureData {
-  name: string;
-  value: any;
+  name?: string;
+  email?: string;
+  phone?: string;
+  logo?: string;
 }

@@ -1,0 +1,51 @@
+version: '3.8'
+services:
+  client:
+    build:
+      context: ./app/client
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: http://localhost:3000
+    environment:
+      VITE_API_URL: http://localhost:3000
+    ports:
+      - "8080:80"
+    restart: always
+    depends_on:
+      - server
+
+  server:
+    build:
+      context: ./app/server
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - RABBITMQ_URL=amqp://admin:password@rabbitmq:5672
+    restart: always
+    depends_on:
+      - rabbitmq
+
+  background:
+    build:
+      context: ./app/background
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - RABBITMQ_URL=amqp://admin:password@rabbitmq:5672
+    restart: always
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: password

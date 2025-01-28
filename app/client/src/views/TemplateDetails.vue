@@ -19,10 +19,23 @@
           :name="field.name"
           @change="handleFileUpload"
           class="input-field"
+          accept=".png"
         />
         <p v-else class="error-message">Unsupported field type: {{ field.type }}</p>
       </div>
-      <p v-if="displayError" class="error-message">All fields must be filled</p>
+      <div class="form-group">
+        <label for="webhookUrlField">Webhook URL</label>
+        <input
+        v-model="webhookUrl"
+        type="text"
+        id="webhookUrlField"
+        name="webhookUrlField"
+        class="input-field"
+        placeholder="Enter your webhook URL"
+        />
+      </div>
+    
+      <p v-if="displayError" class="error-message">{{ errorMessage }}</p>
       <button type="submit" class="submit-button">Submit</button>
     </form>
   </div>
@@ -34,6 +47,7 @@ import { useRouter, useRoute } from 'vue-router';
 
 import type { Ref } from 'vue';
 import type { TemplateDetails } from '@/types/TemplateDetails';
+import type { TemplateForm } from '@/types/TemplateForm';
 
 import { generateTemplate } from '@/api/template'
 import { getTemplateDetails } from '../api/template';
@@ -41,11 +55,13 @@ import { getTemplateDetails } from '../api/template';
 const route = useRoute();
 const router = useRouter();
 
-const formData = ref<Record<string, string | File | null>>({}); 
+const formData: Ref<TemplateForm> = ref({}); 
 const templateDetails: Ref<TemplateDetails | undefined> = ref({
   id: 0,
   requirements:[]
 });
+const webhookUrl: Ref<string> = ref('');
+const errorMessage: Ref<string> = ref('All fields must be filled');
 const displayError: Ref<boolean> = ref(false);
 
 onBeforeMount(async () => {
@@ -59,23 +75,40 @@ onBeforeMount(async () => {
 const handleFileUpload = (event: Event) => {
   const input = event.target as HTMLInputElement;
   const file = input?.files?.[0] || null;
-  if (input?.name) {
-    formData.value[input.name] = file;
+  if (file) {
+
+    if (file.type !== "image/png") {
+      displayError.value = true;
+      errorMessage.value = 'Please upload a valid PNG file.';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      formData.value[input.name || 'logo'] = (reader?.result as string).split(',')[1]; 
+    };
+    reader.readAsDataURL(file);
+
+    displayError.value = false;    
   }
 };
 
 const getPlaceholder = (type: string) => {
-  if (type === 'text') return 'Enter your text';
-  if (type === 'email') return 'Enter your email';
-  if (type === 'tel') return 'Enter your phone number';
-  return '';
+  const placeholder = {
+    'text': 'Enter your text',
+    'email': 'Enter your email',
+    'tel': 'Enter your phone number'
+  }
+  
+  return placeholder[type as keyof typeof placeholder] || '';
 };
 
 const isFormValid = () => {
   for (let key in formData.value) {
     const value = formData.value[key];
     
-    if (value === "" || value === null || value === undefined) {
+    if (value === '' || value === null || value === undefined || webhookUrl.value === '') {
+      errorMessage.value = 'All fields must be filled';
       return false;
     }
   }
@@ -87,7 +120,7 @@ const handleSubmit = async () => {
   if(displayError.value) {
     return;
   }
-  await generateTemplate(formData.value, parseInt(route.params.id as string));
+  await generateTemplate(formData.value, parseInt(route.params.id as string), webhookUrl.value);
   router.push({name: 'generated'})
 };
 </script>

@@ -1,14 +1,23 @@
 {
   "private": true,
   "workspaces": [
-    "app/*"
+    "app/client",
+    "app/server",
+    "app/background"
   ],
   "scripts": {
-    "build:client": "vite build",
-    "build::server": "tsc"
+    "build": "npm-run-all --parallel build:*",
+    "dev": "concurrently -n client,server,background -c green,blue,magenta \"npm:dev:client\" \"npm:dev:server\" \"npm:dev:background\"",
+    "dev:client": "npm --workspace app/client run dev",
+    "dev:server": "npm --workspace app/server run dev",
+    "dev:background": "npm --workspace app/background run dev",
+    "build:client": "npm --workspace app/client run build",
+    "build:server": "npm --workspace app/server run build",
+    "build:background": "npm --workspace app/background run build"
   },
   "devDependencies": {
     "@types/node": "^22.10.10",
+    "concurrently": "^9.1.2",
     "typescript": "^5.7.3"
   }
 }

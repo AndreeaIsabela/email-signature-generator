@@ -8,8 +8,9 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "@backend/*": ["app/backend/src/*"],
-      "@frontend/*": ["app/frontend/src/*"]
+      "@server/*": ["app/server/src/*"],
+      "@client/*": ["app/client/src/*"],
+      "@background/*": ["app/background/*"]
     }
   }
 }

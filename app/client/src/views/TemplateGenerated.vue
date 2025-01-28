@@ -2,7 +2,7 @@
   <div class="template-generated">
     <div class="content">
       <h1>Template Generated Successfully!</h1>
-      <p>Your template has been successfully generated. You can now preview it on....</p>
+      <p>Your template has been successfully generated.</p>
 
       <button @click="generateAnotherTemplate" class="btn secondary">Generate Another Template</button>
     </div>

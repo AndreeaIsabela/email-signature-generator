@@ -1,9 +1,14 @@
 {
-  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist",
     "resolveJsonModule": true,  // Enable importing JSON files
-    "esModuleInterop": true    // Optional, but useful for clean imports
+    "esModuleInterop": true,    // Optional, but useful for clean imports
+    "target": "ESNext",
+    "module": "CommonJS",
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": "."
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]

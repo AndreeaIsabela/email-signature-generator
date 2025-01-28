@@ -7,4 +7,6 @@ const express_1 = __importDefault(require("express"));
 const templatesController_1 = require("../controllers/templatesController");
 const router = express_1.default.Router();
 router.get('/', templatesController_1.getTemplates);
+router.get('/:id', templatesController_1.getTemplate);
+router.post('/', templatesController_1.generateSignature);
 exports.default = router;
